@@ -1,0 +1,13 @@
+.container {
+    margin-bottom: 20px;
+    font-size: 30px;
+}
+img {
+    width: 500px;
+}
+
+form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
