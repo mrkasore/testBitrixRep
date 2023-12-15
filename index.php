@@ -4,7 +4,6 @@ $APPLICATION->SetTitle("1С-Битрикс: Управление сайтом");
 ?><div id="panel">
 	 <?php $APPLICATION->ShowPanel();?>
 </div>
-    Test
 <?$APPLICATION->IncludeComponent(
 	"testname:mycomponent",
 	"",
