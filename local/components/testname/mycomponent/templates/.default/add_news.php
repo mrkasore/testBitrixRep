@@ -11,10 +11,9 @@
             <label>Дата: <?=date("d.m.y"); ?></label>
             <label>Категогия:</label>
             <select name="select_category" size="5" multiple required>
-                <?php $property_enums = CIBlockPropertyEnum::GetList(Array("DEF"=>"DESC", "SORT"=>"ASC"), Array("IBLOCK_ID"=>$arResult["IBLOCK_ID"], "CODE"=>"CATEGORY")); ?>
-                <?php while($enum_fields = $property_enums->GetNext()) : ?>
+                <?php foreach ($arResult[0]["CATEGORIES"] as $enum_fields) : ?>
                     <option value="<?=$enum_fields["ID"]?>"><?=$enum_fields["VALUE"]?></option>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </select>
         </div>
 

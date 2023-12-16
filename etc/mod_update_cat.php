@@ -1,6 +1,5 @@
 <?php
-echo $_GET['id'];
-//echo strip_tags($_REQUEST['category-type-change']);
+
 // Код свойства-списка
 $propertyCode = "CATEGORY";
 

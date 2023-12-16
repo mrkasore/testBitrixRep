@@ -1,15 +1,4 @@
-<?php
-//echo '<pre>';
-//print_r($_GET['id']);
-//print_r($arItem["CATEGORY"]);
-//echo '</pre>';
 
-//$res = CIBlockElement::GetByID($_GET["id"]);
-//if($ar_res = $res->GetNext())
-//    echo '<pre>';
-//    print_r($ar_res);
-//    echo '</pre>';
-//?>
 
 <div class="main-container">
     <h1>Изменить новость</h1>
@@ -26,14 +15,13 @@
                     <label>Дата: <?=$arItem['DATE']; ?></label>
                     <label>Категогия: </label>
                     <select name="select_category" size="5" multiple required>
-                        <?php $property_enums = CIBlockPropertyEnum::GetList(Array("DEF"=>"DESC", "SORT"=>"ASC"), Array("IBLOCK_ID"=>$arResult["IBLOCK_ID"], "CODE"=>"CATEGORY")); ?>;
-                        <?php while($enum_fields = $property_enums->GetNext()) : ?>
+                        <?php foreach ($arResult[0]["CATEGORIES"] as $enum_fields) : ?>
                             <?php if ($enum_fields["VALUE"] == $arItem["CATEGORY"]) : ?>
                                 <option value="<?=$enum_fields["ID"]?>" selected><?=$enum_fields["VALUE"]?></option>
                             <?php else : ?>
                                 <option value="<?=$enum_fields["ID"]?>"><?=$enum_fields["VALUE"]?></option>
                             <?php endif; ?>
-                        <?php endwhile; ?>;
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <input type="submit" name="test" id="test" value="Изменить">

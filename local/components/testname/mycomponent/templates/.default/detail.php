@@ -1,8 +1,4 @@
-<?php
-//    echo '<pre>';
-//    print_r($arResult);
-//    echo '</pre>';
-?>
+
 <div class="main-container">
     <?php foreach ($arResult as $arItem) : ?>
         <?php if($arItem['ID'] == $_GET['id']) : ?>

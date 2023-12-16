@@ -1,12 +1,5 @@
 <? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?>
 
-<?php
-//echo '<pre>';
-//print_r($arResult);
-//echo '</pre>';
-?>
-
-
 <div class="main-container">
     <h1>Список новостей</h1>
     <?php foreach ($arResult as $arItem): ?>

@@ -1,24 +1,18 @@
 <?
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
-// класс для работы с языковыми файлами
+
 use Bitrix\Main\Localization\Loc;
-// класс для всех исключений в системе
 use Bitrix\Main\SystemException;
-// класс для загрузки необходимых файлов, классов, модулей
 use Bitrix\Main\Loader;
 
-// основной класс, является оболочкой компонента унаследованного от CBitrixComponent
 class CIblocList extends CBitrixComponent
 {
 
-    // выполняет основной код компонента, аналог конструктора (метод подключается автоматически)
     public function executeComponent()
     {
         try {
-            // подключаем метод проверки подключения модуля «Информационные блоки»
             $this->checkModules();
-            // подключаем метод подготовки массива $arResult
             $this->getResult();
 
         } catch (SystemException $e) {
@@ -33,38 +27,152 @@ class CIblocList extends CBitrixComponent
         }
     }
 
-    // подключение языковых файлов (метод подключается автоматически)
     public function onIncludeComponentLang()
     {
         Loc::loadMessages(__FILE__);
     }
 
-    // проверяем установку модуля «Информационные блоки» (метод подключается внутри класса try...catch)
     protected function checkModules()
     {
-        // если модуль не подключен
         if (!Loader::includeModule('iblock'))
-            // выводим сообщение в catch
             throw new SystemException(Loc::getMessage('IBLOCK_MODULE_NOT_INSTALLED'));
     }
 
-    // обработка массива $arParams (метод подключается автоматически)
-    public function onPrepareComponentParams($arParams)
-    {
-        // время кеширования
-        if (!isset($arParams['CACHE_TIME'])) {
-            $arParams['CACHE_TIME'] = 3600;
-        } else {
-            $arParams['CACHE_TIME'] = intval($arParams['CACHE_TIME']);
-        }
-        // возвращаем в метод новый массив $arParams     
-        return $arParams;
+
+    function addNewsSend($iblockID) {
+        $el = new CIBlockElement;
+        $PROP = array();
+        $PROP["CATEGORY"] = array("VALUE" => $_POST['select_category']);
+        $arLoadProductArray = array(
+            "IBLOCK_SECTION_ID" => false,
+            "IBLOCK_ID" => $iblockID,
+            "PROPERTY_VALUES"=> $PROP,
+            "NAME" => strip_tags($_REQUEST['name']),
+            "ACTIVE" => "Y",
+            "PREVIEW_TEXT"   => strip_tags($_REQUEST['about']),
+            "PREVIEW_PICTURE" => $_FILES['image-news'],
+            "DETAIL_TEXT"    => strip_tags($_REQUEST['about']),
+            "DETAIL_PICTURE" => $_FILES['image-news']
+        );
+        if ($PRODUCT_ID = $el->Add($arLoadProductArray))
+            echo "New ID: " . $PRODUCT_ID;
+        else
+            echo "Error: " . $el->LAST_ERROR;
+        LocalRedirect("index.php");
     }
+
+    function addCategorySend($iblockID) {
+        $propertyCode = "CATEGORY";
+        $newValue = strip_tags($_REQUEST['category_add']);
+
+        // Получаем ID инфоблока
+        $iblockId = $iblockID;
+        if ($iblockId) {
+            // Получаем ID свойства-списка
+            $propertyId = CIBlockProperty::GetList(array(), array("IBLOCK_ID" => $iblockId, "CODE" => $propertyCode))->Fetch()["ID"];
+
+            if ($propertyId) {
+                // Проверяем, есть ли уже такое значение в списке
+                $enumId = CIBlockPropertyEnum::GetList(
+                    array(),
+                    array("IBLOCK_ID" => $iblockId, "PROPERTY_ID" => $propertyId, "VALUE" => $newValue)
+                )->Fetch()["ID"];
+
+                if (!$enumId) {
+                    // Если значения нет, то добавляем новое значение в список
+                    $enum = new CIBlockPropertyEnum;
+                    $enumId = $enum->Add(array("PROPERTY_ID" => $propertyId, "VALUE" => $newValue));
+                }
+            }
+        }
+        LocalRedirect("index.php");
+    }
+
+    function modDeleteCat($iblockID) {
+        $propertyCode = "CATEGORY";
+        $iblockId = $iblockID;
+
+        if ($iblockId) {
+            // Получаем ID свойства-списка
+            $propertyId = CIBlockProperty::GetList(array(), array("IBLOCK_ID" => $iblockId, "CODE" => $propertyCode))->Fetch()["ID"];
+
+            if ($propertyId) {
+                // Получаем все значения списка свойства-списка
+                $enumList = CIBlockPropertyEnum::GetList(
+                    array(),
+                    array("IBLOCK_ID" => $iblockId, "PROPERTY_ID" => $propertyId)
+                );
+
+                CIBlockPropertyEnum::Delete($_GET['id']);
+
+            }
+        }
+        LocalRedirect("index.php");
+    }
+
+    function modUpdateCategory($iblockID) {
+        // Код свойства-списка
+        $propertyCode = "CATEGORY";
+
+        $iblockId = $iblockID;
+
+        if ($iblockId) {
+            // Получаем ID свойства-списка
+            $propertyId = CIBlockProperty::GetList(array(), array("IBLOCK_ID" => $iblockId, "CODE" => $propertyCode))->Fetch()["ID"];
+
+            if ($propertyId) {
+                // Получаем все значения списка свойства-списка
+                $enumList = CIBlockPropertyEnum::GetList(
+                    array(),
+                    array("IBLOCK_ID" => $iblockId, "PROPERTY_ID" => $propertyId)
+                );
+
+                while ($enum = $enumList->Fetch()) {
+
+                    if($enum["ID"] == $_GET['id']) {
+                        // Редактирование значения
+                        $enumId = $enum["ID"];
+                        $newValue = strip_tags($_REQUEST['category-type-change']);
+                        $enumUpdate = new CIBlockPropertyEnum;
+                        $enumUpdate->Update($enumId, array("VALUE" => $newValue));
+                    }
+
+                }
+            }
+        }
+        LocalRedirect("index.php");
+    }
+
+    function modifyNewsSend() {
+        $el = new CIBlockElement;
+        $PROP = array();
+        $PROP["CATEGORY"] = array("VALUE" => $_POST['select_category']);
+        $arLoadProductArray = Array(
+            "IBLOCK_SECTION" => false,
+            "PROPERTY_VALUES"=> $PROP,
+            "NAME"           => strip_tags($_REQUEST['name']),
+            "ACTIVE"         => "Y",
+            "PREVIEW_TEXT"   => strip_tags($_REQUEST['about']),
+            "DETAIL_TEXT"    => strip_tags($_REQUEST['about']),
+            "DETAIL_PICTURE" => $_FILES['image-news'],
+            "PREVIEW_PICTURE" => $_FILES['image-news'],
+        );
+        $PRODUCT_ID = $_GET['id'];
+        $res = $el->Update($PRODUCT_ID, $arLoadProductArray);
+
+        LocalRedirect("index.php");
+    }
+
+    function deleteNews() {
+        CIBlockElement::Delete($_GET['id']);
+        LocalRedirect("index.php");
+    }
+
+
 
     // подготовка массива $arResult (метод подключается внутри класса try...catch)
     protected function getResult()
     {
-
         // если нет валидного кеша, получаем данные из БД
         if ($this->startResultCache()) {
 
@@ -75,19 +183,13 @@ class CIblocList extends CBitrixComponent
                 "order" => ["SORT" => "ASC"]
             ]);
 
-            function GetListValueById($ID)
-            {
-                $UserField = CIBlockPropertyEnum::GetList(
-                    array(),
-                    array("ID" => $ID)
-                );
-                if($UserFieldAr = $UserField->GetNext())
-                {
-                    return $UserFieldAr["VALUE"];
-                } else {
-                    return false;
-                }
+
+            $array = array();
+            $property_enums = CIBlockPropertyEnum::GetList(Array("DEF"=>"DESC", "SORT"=>"ASC"), Array("IBLOCK_ID"=>$arResult["IBLOCK_ID"], "CODE"=>"CATEGORY"));
+            while ($enum_fields = $property_enums->GetNext()) {
+                array_push($array, $enum_fields);
             }
+
 
             // Формируем массив arResult
             while ($arItem = $res->fetch()) {
@@ -100,52 +202,52 @@ class CIblocList extends CBitrixComponent
                 );
                 $arItem["PREVIEW_PICTURE"] = CFile::GetFileArray($arItem["PREVIEW_PICTURE"]);
                 $arItem["DATE"] = $dateCreate;
-                $arItem["CATEGORY"] = GetListValueById($arItem["IBLOCK_ELEMENTS_ELEMENT_NEWS_CATEGORY_VALUE"]);
+                $UserField = CIBlockPropertyEnum::GetList(
+                    array(),
+                    array("ID" => $arItem["IBLOCK_ELEMENTS_ELEMENT_NEWS_CATEGORY_VALUE"])
+                );
+                if($UserFieldAr = $UserField->GetNext()) {
+                    $arItem["CATEGORY"] = $UserFieldAr["VALUE"];
+                }
+                $arItem["CATEGORIES"] = $array;
                 $this->arResult[] = $arItem;
             }
 
-            // кэш не затронет весь код ниже, он будут выполняться на каждом хите, здесь работаем с другим $arResult, будут доступны только те ключи массива, которые перечислены в вызове SetResultCacheKeys()
+
+
             if (isset($this->arResult)) {
-                // ключи $arResult перечисленные при вызове этого метода, будут доступны в component_epilog.php и ниже по коду, обратите внимание там будет другой $arResult
-                $this->SetResultCacheKeys(
-                    array()
-                );
+
                 $current_link = $_SERVER["REQUEST_URI"];
+                $iblockID = $this->arResult[0]['IBLOCK_ID'];
                 if (str_contains($current_link, "page=detail&id=")) {
                     $this->IncludeComponentTemplate('detail');
                 } else if ((str_contains($current_link, "?page=add_news"))) {
                     $this->IncludeComponentTemplate('add_news');
                 } else if ((str_contains($current_link, "?page=send_form"))) {
-                    $this->IncludeComponentTemplate('add_news_send');
+                    $this->addNewsSend($iblockID);
                 } else if ((str_contains($current_link, "?page=modify_news"))) {
                     $this->IncludeComponentTemplate('modify_news');
                 } else if ((str_contains($current_link, "?page=send_modify_form"))) {
-                    $this->IncludeComponentTemplate('modify_news_send');
+                    $this->modifyNewsSend();
                 } else if ((str_contains($current_link, "?page=delete"))) {
-                    $this->IncludeComponentTemplate('delete_news');
+                    $this->deleteNews();
                 } else if ((str_contains($current_link, "?page=add_category"))) {
                     $this->IncludeComponentTemplate('add_category');
                 } else if ((str_contains($current_link, "?page=add_send_category"))) {
-                    $this->IncludeComponentTemplate('add_category_send');
+                    $this->addCategorySend($iblockID);
                 } else if (str_contains($current_link, "?page=modify_category")) {
                     $this->IncludeComponentTemplate('modify_category');
                 } else if (str_contains($current_link, "?page=mod_update_cat&id=")) {
-                    $this->IncludeComponentTemplate('mod_update_cat');
+                    $this->modUpdateCategory($iblockID);
                 } else if (str_contains($current_link, "?page=mod_delete_cat&id=")) {
-                    $this->IncludeComponentTemplate('mod_delete_cat');
+                    $this->modDeleteCat($iblockID);
                 } else {
                     $this->IncludeComponentTemplate();
                 }
-                // подключаем шаблон и сохраняем кеш
 
-            } else { // если выяснилось что кешировать данные не требуется, прерываем кеширование и выдаем сообщение «Страница не найдена»
-                $this->AbortResultCache();
-                \Bitrix\Iblock\Component\Tools::process404(
-                    Loc::getMessage('PAGE_NOT_FOUND'),
-                    true,
-                    true
-                );
             }
         }
     }
 }
+
+
