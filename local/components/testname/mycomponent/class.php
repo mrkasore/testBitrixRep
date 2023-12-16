@@ -131,8 +131,14 @@ class CIblocList extends CBitrixComponent
                     $this->IncludeComponentTemplate('delete_news');
                 } else if ((str_contains($current_link, "?page=add_category"))) {
                     $this->IncludeComponentTemplate('add_category');
-                } else if((str_contains($current_link, "?page=add_send_category"))) {
+                } else if ((str_contains($current_link, "?page=add_send_category"))) {
                     $this->IncludeComponentTemplate('add_category_send');
+                } else if (str_contains($current_link, "?page=modify_category")) {
+                    $this->IncludeComponentTemplate('modify_category');
+                } else if (str_contains($current_link, "?page=mod_update_cat&id=")) {
+                    $this->IncludeComponentTemplate('mod_update_cat');
+                } else if (str_contains($current_link, "?page=mod_delete_cat&id=")) {
+                    $this->IncludeComponentTemplate('mod_delete_cat');
                 } else {
                     $this->IncludeComponentTemplate();
                 }

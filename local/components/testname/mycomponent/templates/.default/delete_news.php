@@ -1,7 +1,7 @@
 <?php
-echo 'DELETE';
-echo $_GET['id'];
-?>
+//echo 'DELETE';
+//echo $_GET['id'];
+//?>
 
 <?
 if(CIBlock::GetPermission($IBLOCK_ID)>='W')

@@ -1,9 +1,9 @@
 <? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?>
 
 <?php
-echo '<pre>';
-print_r($arResult);
-echo '</pre>';
+//echo '<pre>';
+//print_r($arResult);
+//echo '</pre>';
 ?>
 
 
@@ -22,5 +22,4 @@ echo '</pre>';
 <div сlass="container">
     <a href="index.php?page=add_news"><button>Добавить новость</button></a>
     <a href="index.php?page=add_category"><button>Добавить категорию новости</button></a>
-    <a href="index.php?page=modify_category"><button>На страницу редактирования категории новости</button></a>
 </div>

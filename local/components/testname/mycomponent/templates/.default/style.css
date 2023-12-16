@@ -11,3 +11,8 @@ form > div {
     flex-direction: column;
     gap: 1rem;
 }
+
+.change-category-form {
+    display: flex;
+    flex-direction: row;
+}

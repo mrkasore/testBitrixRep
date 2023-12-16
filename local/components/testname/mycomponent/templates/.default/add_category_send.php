@@ -1,5 +1,5 @@
 <?php
-echo "Добавить категорию";
+//echo "Добавить категорию";
 
 $propertyCode = "CATEGORY";
 

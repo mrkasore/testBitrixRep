@@ -7,9 +7,9 @@
 //
 //    print_r($ar_res);
 
-    echo '<pre>';
-    print_r($arResult);
-    echo '</pre>';
+//    echo '<pre>';
+//    print_r($arResult);
+//    echo '</pre>';
 ?>
 <?php foreach ($arResult as $arItem) : ?>
     <?php if($arItem['ID'] == $_GET['id']) : ?>
