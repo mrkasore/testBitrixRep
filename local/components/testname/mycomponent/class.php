@@ -21,11 +21,6 @@ class CIblocList extends CBitrixComponent
             // подключаем метод подготовки массива $arResult
             $this->getResult();
 
-//            $current_link = $_SERVER["REQUEST_URI"];
-//            if(str_contains($current_link, "page=detail&id=")) {
-//                echo 'true';
-//            }
-
         } catch (SystemException $e) {
             ShowError($e->getMessage());
         }
@@ -116,7 +111,6 @@ class CIblocList extends CBitrixComponent
                     array()
                 );
                 $current_link = $_SERVER["REQUEST_URI"];
-                $compPage = '';
                 if (str_contains($current_link, "page=detail&id=")) {
                     $this->IncludeComponentTemplate('detail');
                 } else if ((str_contains($current_link, "?page=add_news"))) {

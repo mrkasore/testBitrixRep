@@ -1,8 +1,3 @@
-<?php
-//echo 'DELETE';
-//echo $_GET['id'];
-//?>
-
 <?
 if(CIBlock::GetPermission($IBLOCK_ID)>='W')
 {
@@ -15,4 +10,7 @@ if(CIBlock::GetPermission($IBLOCK_ID)>='W')
     else
         $DB->Commit();
 }
+
+header("Location: index.php");
+exit();
 ?>

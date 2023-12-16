@@ -16,4 +16,7 @@ $arLoadProductArray = Array(
 $PRODUCT_ID = $_GET['id'];  // изменяем элемент с кодом (ID) 2
 $res = $el->Update($PRODUCT_ID, $arLoadProductArray);
 
+header("Location: index.php");
+exit();
 ?>
+

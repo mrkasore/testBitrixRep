@@ -31,10 +31,8 @@ if ($iblockId) {
             }
 
         }
-    } else {
-        echo "Свойство-список не найдено";
     }
-} else {
-    echo "Инфоблок не найден";
 }
+header("Location: index.php");
+exit();
 ?>

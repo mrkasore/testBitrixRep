@@ -18,27 +18,10 @@ if ($iblockId) {
             array("IBLOCK_ID" => $iblockId, "PROPERTY_ID" => $propertyId)
         );
 
-//        while ($enum = $enumList->Fetch()) {
-////            echo "ID: " . $enum["ID"] . "<br>";
-////            echo "VALUE: " . $enum["VALUE"] . "<br>";
-//
-//            if($enum["ID"] == $_GET['id']) {
-//                // Редактирование значения
-//                $enumId = $enum["ID"];
-//                $newValue = strip_tags($_REQUEST['category-type-change']);
-//                $enumUpdate = new CIBlockPropertyEnum;
-//                $enumUpdate->Update($enumId, array("VALUE" => $newValue));
-//            }
-
-
-            // Удаление значения
         CIBlockPropertyEnum::Delete($_GET['id']);
-//
-//        }
-    } else {
-        echo "Свойство-список не найдено";
+
     }
-} else {
-    echo "Инфоблок не найден";
 }
+header("Location: index.php");
+exit();
 ?>

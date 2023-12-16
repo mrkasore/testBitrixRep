@@ -4,8 +4,6 @@ CModule::IncludeModule('iblock');
 $el = new CIBlockElement;
 $PROP = array();
 $PROP["CATEGORY"] = array("VALUE" => $_POST['select_category']);
-//$PROP[12] = "Белый";  // свойству с кодом 12 присваиваем значение "Белый"
-//$PROP[3] = 38;        // свойству с кодом 3 присваиваем значение 38
 $arLoadProductArray = array(
     "MODIFIED_BY" => $USER->GetID(), // элемент изменен текущим пользователем
     "IBLOCK_SECTION_ID" => false,          // элемент лежит в корне раздела
@@ -22,4 +20,7 @@ if ($PRODUCT_ID = $el->Add($arLoadProductArray))
     echo "New ID: " . $PRODUCT_ID;
 else
     echo "Error: " . $el->LAST_ERROR;
+
+header("Location: index.php");
+exit();
 ?>
